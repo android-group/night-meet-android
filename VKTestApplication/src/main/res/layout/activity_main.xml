@@ -29,7 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="#ff0000" />
+        app:backgroundTint="#aa1829"
+        android:src="@android:drawable/ic_media_play"
+        android:scaleType="centerCrop" />
 
 
     <android.support.design.widget.FloatingActionButton
@@ -38,5 +40,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="#00ff15" />
+        app:backgroundTint="#0c7c15"
+        android:src="@android:drawable/btn_star_big_off"
+        android:scaleType="centerCrop"
+        android:nestedScrollingEnabled="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:longClickable="true" />
 </android.support.design.widget.CoordinatorLayout>

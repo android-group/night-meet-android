@@ -8,32 +8,18 @@
     android:orientation="horizontal"
     android:gravity="center">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_sign_in_short"
+        android:id="@+id/textView" />
+
     <ImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:id="@+id/vklogo"
         android:layout_gravity="center_vertical"
         android:background="@drawable/vklogo" />
-
-    <Button
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/action_sign_in_short"
-        android:background="#507299"
-        android:textColor="#ffffff" />
-
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="login"
-        android:padding="15dp"
-        android:background="#F6881F"
-        android:textColor="#FFF"
-        android:onClick="onClick"
-        android:layout_centerInParent="true" />
 
 </LinearLayout>
 
