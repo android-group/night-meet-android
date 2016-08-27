@@ -70,10 +70,7 @@ public class LoginActivity extends FragmentActivity {
     }
 
     private void showLogout() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(ru.android_studio.night_meet.R.id.container, new LogoutFragment())
-                .commitAllowingStateLoss();
+        startMainActivity();
     }
 
     private void showLogin() {
@@ -111,7 +108,7 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 // User passed Authorization
-                startTestActivity();
+                startMainActivity();
             }
 
             @Override
@@ -125,8 +122,8 @@ public class LoginActivity extends FragmentActivity {
         }
     }
 
-    private void startTestActivity() {
-        startActivity(new Intent(this, TestActivity.class));
+    private void startMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     public static class LoginFragment extends android.support.v4.app.Fragment {
@@ -159,7 +156,7 @@ public class LoginActivity extends FragmentActivity {
             v.findViewById(ru.android_studio.night_meet.R.id.continue_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((LoginActivity) getActivity()).startTestActivity();
+                    ((LoginActivity) getActivity()).startMainActivity();
                 }
             });
 

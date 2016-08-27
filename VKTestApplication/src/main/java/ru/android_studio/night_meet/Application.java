@@ -3,6 +3,9 @@ package ru.android_studio.night_meet;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
+
 import ru.android_studio.sdk.VKAccessToken;
 import ru.android_studio.sdk.VKAccessTokenTracker;
 import ru.android_studio.sdk.VKSdk;
@@ -26,5 +29,12 @@ public class Application extends android.app.Application {
         super.onCreate();
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this).withPayments();
+
+        Picasso.Builder builder = new Picasso.Builder(this);
+        builder.downloader(new OkHttpDownloader(this, Integer.MAX_VALUE));
+        Picasso built = builder.build();
+        built.setIndicatorsEnabled(true);
+        built.setLoggingEnabled(true);
+        Picasso.setSingletonInstance(built);
     }
 }

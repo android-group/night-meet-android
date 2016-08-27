@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">VK SDK Test Application</string>
+    <string name="app_name">Night Meet</string>
     <integer name="com_vk_sdk_AppId">5605778</integer>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Night Meet</string>
 </resources>
