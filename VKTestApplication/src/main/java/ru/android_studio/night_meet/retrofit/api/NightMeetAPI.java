@@ -37,7 +37,7 @@ public interface NightMeetAPI {
 
     /**
      * нажатие кнопки
-     * POST: submit?user_id=<текущий пользователь>&relationship_type=<1/2>
+     * POST: submit?user_id=<текущий пользователь>&relationship_type=<int>
      * * relationship_type:
      * 1 - love
      * 2 - hate
@@ -53,7 +53,7 @@ public interface NightMeetAPI {
 
     /**
      * получить симпатии
-     * GET: sympathy?user_id=<текущий пользователь>&is_viewed=<true/false>
+     * GET: sympathy?user_id=<текущий пользователь>&is_viewed=<boolean>
      *
      * @param userId - идентификатор текущего пользователя.
      * @param isViewed - просмотрел пользователя или нет
@@ -66,7 +66,7 @@ public interface NightMeetAPI {
 
     /**
      * изменение статуса
-     * PUT: sympathy?user_id=<текущий пользователь>&is_viewed=<true/false>
+     * PUT: sympathy?user_id=<текущий пользователь>&is_viewed=<boolean>
      *
      * @param userId - идентификатор текущего пользователя.
      * @param isViewed - просмотрел пользователя или нет
