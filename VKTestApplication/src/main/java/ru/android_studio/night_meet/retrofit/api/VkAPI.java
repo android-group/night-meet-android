@@ -3,7 +3,7 @@ package ru.android_studio.night_meet.retrofit.api;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import ru.android_studio.night_meet.retrofit.model.Example;
+import ru.android_studio.night_meet.retrofit.model.Users;
 
 /**
  * Плучение информации о пользователях из vk.com
@@ -36,5 +36,5 @@ public interface VkAPI {
      * }
      */
     @GET("users.get")
-    Call<Example> getUsers(@Query("user_ids") int user, @Query("fields") String fields);
+    Call<Users> getUsers(@Query("user_ids") int user, @Query("fields") String fields);
 }

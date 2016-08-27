@@ -19,10 +19,10 @@ import javax.annotation.Generated;
 @JsonPropertyOrder({
         "response"
 })
-public class Example {
+public class Users {
 
     @JsonProperty("response")
-    private List<Response> response = new ArrayList<Response>();
+    private List<User> user = new ArrayList<User>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -30,16 +30,16 @@ public class Example {
      * @return The response
      */
     @JsonProperty("response")
-    public List<Response> getResponse() {
-        return response;
+    public List<User> getUser() {
+        return user;
     }
 
     /**
-     * @param response The response
+     * @param user The response
      */
     @JsonProperty("response")
-    public void setResponse(List<Response> response) {
-        this.response = response;
+    public void setUser(List<User> user) {
+        this.user = user;
     }
 
     @JsonAnyGetter

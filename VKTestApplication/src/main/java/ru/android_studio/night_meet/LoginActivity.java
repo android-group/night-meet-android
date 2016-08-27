@@ -39,7 +39,7 @@ public class LoginActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(ru.android_studio.night_meet.R.layout.activity_start);
+        setContentView(R.layout.activity_start);
         VKSdk.wakeUpSession(this, new VKCallback<VKSdk.LoginState>() {
             @Override
             public void onResult(VKSdk.LoginState res) {
@@ -76,7 +76,7 @@ public class LoginActivity extends FragmentActivity {
     private void showLogin() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(ru.android_studio.night_meet.R.id.container, new LoginFragment())
+                .replace(R.id.container, new LoginFragment())
                 .commitAllowingStateLoss();
     }
 
@@ -133,13 +133,17 @@ public class LoginActivity extends FragmentActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View v = inflater.inflate(ru.android_studio.night_meet.R.layout.fragment_login, container, false);
-            v.findViewById(ru.android_studio.night_meet.R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+            View v = inflater.inflate(R.layout.fragment_login, container, false);
+
+            View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     VKSdk.login(getActivity(), sMyScope);
                 }
-            });
+            };
+
+            v.findViewById(R.id.sign_in_button).setOnClickListener(onClickListener);
+            v.findViewById(R.id.vklogo).setOnClickListener(onClickListener);
             return v;
         }
 
@@ -152,15 +156,15 @@ public class LoginActivity extends FragmentActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View v = inflater.inflate(ru.android_studio.night_meet.R.layout.fragment_logout, container, false);
-            v.findViewById(ru.android_studio.night_meet.R.id.continue_button).setOnClickListener(new View.OnClickListener() {
+            View v = inflater.inflate(R.layout.fragment_logout, container, false);
+            v.findViewById(R.id.continue_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     ((LoginActivity) getActivity()).startMainActivity();
                 }
             });
 
-            v.findViewById(ru.android_studio.night_meet.R.id.logout).setOnClickListener(new View.OnClickListener() {
+            v.findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     VKSdk.logout();

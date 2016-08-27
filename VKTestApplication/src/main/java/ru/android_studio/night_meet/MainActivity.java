@@ -18,9 +18,10 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import ru.android_studio.night_meet.retrofit.api.VkAPI;
-import ru.android_studio.night_meet.retrofit.model.Example;
+import ru.android_studio.night_meet.retrofit.model.Users;
+import ru.android_studio.night_meet.retrofit.model.User;
 
-public class MainActivity extends AppCompatActivity implements Callback<Example> {
+public class MainActivity extends AppCompatActivity implements Callback<Users> {
 
     private static final String TAG = "MainActivity";
 
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Example>
                     Log.e(TAG, e.getLocalizedMessage());
                     e.printStackTrace();
                 }
+                Snackbar.make(view, "next", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
@@ -61,8 +63,13 @@ public class MainActivity extends AppCompatActivity implements Callback<Example>
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Like", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                try {
+                    nextMeet(9917403);
+                } catch (IOException e) {
+                    Log.e(TAG, e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+                Snackbar.make(view, "Like", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
     }
@@ -80,14 +87,14 @@ public class MainActivity extends AppCompatActivity implements Callback<Example>
     }
 
     private void nextMeet(int accountId) throws IOException {
-        Call<Example> call = vkAPI.getUsers(accountId, "photo_max_orig");
+        Call<Users> call = vkAPI.getUsers(accountId, "photo_max_orig");
         call.enqueue(this);
     }
 
 
     @Override
-    public void onResponse(Call<Example> call, Response<Example> response) {
-        ru.android_studio.night_meet.retrofit.model.Response user = response.body().getResponse().get(0);
+    public void onResponse(Call<Users> call, Response<Users> response) {
+        User user = response.body().getUser().get(0);
         String url = user.getPhotoMaxOrig();
         if (photo != null) {
             Log.i(TAG, "photo view is found");
@@ -96,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Example>
     }
 
     @Override
-    public void onFailure(Call<Example> call, Throwable t) {
+    public void onFailure(Call<Users> call, Throwable t) {
         Log.e(TAG, t.getLocalizedMessage());
         t.printStackTrace();
     }

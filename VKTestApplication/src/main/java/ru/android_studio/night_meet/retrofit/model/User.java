@@ -20,7 +20,7 @@ import javax.annotation.Generated;
         "last_name",
         "photo_max_orig"
 })
-public class Response {
+public class User {
 
     @JsonProperty("uid")
     private Integer uid;

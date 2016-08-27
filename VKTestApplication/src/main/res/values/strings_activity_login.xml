@@ -1,6 +1,6 @@
 <resources>
     <!-- Strings related to login -->
-    <string name="action_sign_in_short">Sign in with VK</string>
+    <string name="action_sign_in_short">Войти</string>
     <string name="action_sign_in_force">Force OAuth</string>
     <string name="users_get">users.get</string>
     <string name="friends_get">friends.get</string>
