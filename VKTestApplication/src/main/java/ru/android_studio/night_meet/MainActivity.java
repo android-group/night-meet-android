@@ -17,8 +17,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-import ru.android_studio.night_meet.retrofit.model.Example;
 import ru.android_studio.night_meet.retrofit.api.VkAPI;
+import ru.android_studio.night_meet.retrofit.model.Example;
 
 public class MainActivity extends AppCompatActivity implements Callback<Example> {
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Example>
     }
 
     private void nextMeet(int accountId) throws IOException {
-        Call<Example> call = vkAPI.listUsers(accountId, "photo_max_orig");
+        Call<Example> call = vkAPI.getUsers(accountId, "photo_max_orig");
         call.enqueue(this);
     }
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Example>
     public void onResponse(Call<Example> call, Response<Example> response) {
         ru.android_studio.night_meet.retrofit.model.Response user = response.body().getResponse().get(0);
         String url = user.getPhotoMaxOrig();
-        if(photo != null) {
+        if (photo != null) {
             Log.i(TAG, "photo view is found");
             ImageLoader.loadByUrlToImageView(this, url, photo);
         }

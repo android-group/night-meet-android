@@ -1,11 +1,5 @@
-
 package ru.android_studio.night_meet.retrofit.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,10 +7,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Generated;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "response"
+        "response"
 })
 public class Example {
 
@@ -26,9 +27,7 @@ public class Example {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     * 
-     * @return
-     *     The response
+     * @return The response
      */
     @JsonProperty("response")
     public List<Response> getResponse() {
@@ -36,9 +35,7 @@ public class Example {
     }
 
     /**
-     * 
-     * @param response
-     *     The response
+     * @param response The response
      */
     @JsonProperty("response")
     public void setResponse(List<Response> response) {
