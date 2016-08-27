@@ -24,5 +24,16 @@
         android:background="#507299"
         android:textColor="#ffffff" />
 
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="login"
+        android:padding="15dp"
+        android:background="#F6881F"
+        android:textColor="#FFF"
+        android:onClick="onClick"
+        android:layout_centerInParent="true" />
+
 </LinearLayout>
 
