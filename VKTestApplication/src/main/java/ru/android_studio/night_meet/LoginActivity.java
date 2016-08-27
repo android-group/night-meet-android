@@ -142,7 +142,6 @@ public class LoginActivity extends FragmentActivity {
                 }
             };
 
-            v.findViewById(R.id.sign_in_button).setOnClickListener(onClickListener);
             v.findViewById(R.id.vklogo).setOnClickListener(onClickListener);
             return v;
         }
