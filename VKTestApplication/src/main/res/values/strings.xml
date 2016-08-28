@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Night Meet</string>
-    <integer name="com_vk_sdk_AppId">5605778</integer>
     <string name="title_activity_main">Night Meet</string>
+    <integer name="com_vk_sdk_AppId">5605778</integer>
+
+
+    // if your App ID is 1234567, you should use fb1234567
+    <string name="fb_login_protocol_scheme">fb648304208661579</string>
+    <string name="facebook_app_id">648304208661579</string>
 </resources>

@@ -1,12 +1,12 @@
-<LinearLayout
-    style="@style/Container"
+<LinearLayout style="@style/Container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".LoginActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:gravity="center">
+    android:orientation="vertical"
+    android:gravity="center"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,12 +14,35 @@
         android:text="@string/action_sign_in_short"
         android:id="@+id/textView" />
 
-    <ImageView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:id="@+id/vklogo"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/vklogo" />
+    <LinearLayout style="@style/Container"
+        tools:context=".LoginActivity"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center" >
 
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/vk"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/vklogo" />
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/ok"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/oklogo" />
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:background="@drawable/flogo"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 </LinearLayout>
 

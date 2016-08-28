@@ -4,7 +4,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion '23.0.3'
     defaultConfig {
-        minSdkVersion 9 //android.os.Build.VERSION_CODES.GINGERBREAD
+        minSdkVersion 15 //android.os.Build.VERSION_CODES.GINGERBREAD
         targetSdkVersion 23 //android.os.Build.VERSION_CODES.M
         versionCode 1
         versionName '1.0'
@@ -52,4 +52,8 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.1'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
+
+    compile files('../libs/odnoklassniki-android-sdk.jar')
+
+    compile 'com.facebook.android:facebook-android-sdk:4.15.0'
 }
