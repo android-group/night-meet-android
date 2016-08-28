@@ -2,34 +2,17 @@ package ru.android_studio.night_meet.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-
-import java.util.Arrays;
 
 import ru.android_studio.night_meet.MainActivity;
 import ru.android_studio.night_meet.R;
-import ru.android_studio.night_meet.config.OdnoklassnikiConfig;
 import ru.android_studio.sdk.VKAccessToken;
 import ru.android_studio.sdk.VKCallback;
 import ru.android_studio.sdk.VKScope;
 import ru.android_studio.sdk.VKSdk;
 import ru.android_studio.sdk.api.VKError;
-import ru.ok.android.sdk.Odnoklassniki;
-import ru.ok.android.sdk.OkTokenRequestListener;
 import ru.ok.android.sdk.util.OkScope;
 
 
@@ -55,15 +38,18 @@ public class VkLoginActivity extends OkLoginActivity {
             VKScope.DOCS
     };
 
+    //static CallbackManager callbackManager;
+
+    //private static LoginButton loginButton;
+
     private boolean isResumed = false;
-    static CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
+        //FacebookSdk.sdkInitialize(getApplicationContext());
+        //callbackManager = CallbackManager.Factory.create();
 
         VKSdk.wakeUpSession(this, new VKCallback<VKSdk.LoginState>() {
             @Override
@@ -136,11 +122,9 @@ public class VkLoginActivity extends OkLoginActivity {
 
         if (!VKSdk.onActivityResult(requestCode, resultCode, data, callback)) {
             super.onActivityResult(requestCode, resultCode, data);
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+            //callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
-
-    private static LoginButton loginButton;
 
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
@@ -158,7 +142,7 @@ public class VkLoginActivity extends OkLoginActivity {
 
             initVk(v);
             initOk(v);
-            initFacebook(v);
+            //initFacebook(v);
 
             return v;
         }
@@ -186,7 +170,7 @@ public class VkLoginActivity extends OkLoginActivity {
             v.findViewById(R.id.ok).setOnClickListener(okOnClickListener);
         }
 
-        private void initFacebook(View v) {
+        /*private void initFacebook(View v) {
             loginButton = (LoginButton) v.findViewById(R.id.login_button);
             // "publish_actions"
             loginButton.setReadPermissions(Arrays.asList("user_status", "public_profile", "email"));
@@ -212,6 +196,6 @@ public class VkLoginActivity extends OkLoginActivity {
                     Log.d(TAG, "facebook:onError", exception);
                 }
             });
-        }
+        }*/
     }
 }

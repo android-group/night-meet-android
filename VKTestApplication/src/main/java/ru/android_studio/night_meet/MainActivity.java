@@ -1,41 +1,15 @@
 package ru.android_studio.night_meet;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookAuthorizationException;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.ProfilePictureView;
-import com.facebook.share.ShareApi;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareDialog;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,8 +24,11 @@ import ru.android_studio.night_meet.retrofit.model.Users;
 public class MainActivity extends AppCompatActivity implements Callback<Users> {
 
     private static final String TAG = "MainActivity";
+
     private ImageView photo;
+
     private VkAPI vkAPI;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +51,9 @@ public class MainActivity extends AppCompatActivity implements Callback<Users> {
                 onClickPostPhoto();
             }
         });*/
+
         init();
+
         try {
             nextMeet(210700286);
         } catch (IOException e) {
@@ -146,6 +125,4 @@ public class MainActivity extends AppCompatActivity implements Callback<Users> {
         Log.e(TAG, t.getLocalizedMessage());
         t.printStackTrace();
     }
-
-
 }

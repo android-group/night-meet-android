@@ -16,12 +16,13 @@ import com.squareup.picasso.Picasso;
  * Если не нашли изображения в кэше, тогда скачиваем их с сервера
 * */
 public class ImageLoader {
-    public static void loadByUrlToImageView(final Context context, final String url, final ImageView imageView) {
 
+    public static void loadByUrlToImageView(final Context context, final String url, final ImageView imageView) {
         Picasso.with(context)
                 .load(url)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .into(imageView, new Callback() {
+
                     @Override
                     public void onSuccess() {
 
