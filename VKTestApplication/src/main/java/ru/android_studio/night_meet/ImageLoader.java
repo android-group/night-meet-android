@@ -20,6 +20,7 @@ public class ImageLoader {
     public static void loadByUrlToImageView(final Context context, final String url, final ImageView imageView) {
         Picasso.with(context)
                 .load(url)
+                .placeholder(R.drawable.like_white)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .into(imageView, new Callback() {
 
@@ -33,6 +34,7 @@ public class ImageLoader {
                         //Try again online if cache failed
                         Picasso.with(context)
                                 .load(url)
+                                .placeholder(R.drawable.like_white)
                                 .into(imageView, new Callback() {
                                     @Override
                                     public void onSuccess() {
