@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -117,16 +116,6 @@ public class MainActivity extends AppCompatActivity implements Callback<Users> {
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -142,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Users> {
 
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_msg){
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, ChatActivity.class);
             startActivity(intent);
             finish();
         }
