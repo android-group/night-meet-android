@@ -47,8 +47,6 @@ public class ChatActivity extends AppCompatActivity {
         userId = getIntent().getStringExtra(ConfigParam.USER_ID);
         Log.i(TAG, "My userId: " + userId);
 
-        init();
-
         Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(topToolBar);
         topToolBar.setLogo(R.mipmap.ic_launcher);
@@ -67,8 +65,20 @@ public class ChatActivity extends AppCompatActivity {
         // specify an adapter (see also next example)
         mAdapter = new ChatAdapter(this, users, nightMeetAPI, userId);
         mRecyclerView.setAdapter(mAdapter);
+
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
         mRecyclerView.addItemDecoration(itemDecoration);
+
+        init();
+        View emptyView = findViewById(R.id.empty_view);
+        if (users.isEmpty()) {
+            mRecyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     private void init() {
@@ -80,8 +90,7 @@ public class ChatActivity extends AppCompatActivity {
         vkAPI = builder.baseUrl("https://api.vk.com/method/").build().create(VkAPI.class);
         nightMeetAPI = builder.baseUrl("http://android-studio.ru:8888/api/v1/").build().create(NightMeetAPI.class);
 
-        int relationType = RelationType.CONNECT.ordinal() + 1;
-        Call<Result> relations = nightMeetAPI.getRelations(userId, relationType);
+        Call<Result> relations = nightMeetAPI.getRelations(userId, RelationType.CONNECT.getId());
         relations.enqueue(new NightMeetUserCallBack());
 
         photo = (ImageView) findViewById(R.id.small_photo);
@@ -116,9 +125,9 @@ public class ChatActivity extends AppCompatActivity {
     private class NightMeetUserCallBack implements retrofit2.Callback<Result> {
         @Override
         public void onResponse(Call<Result> call, Response<Result> response) {
-            Log.i(TAG, "NightMeetUserCallBack onResponse");
+            Log.i(TAG, "onResponse");
             String[] account_ids = response.body().account_ids;
-
+            Log.i(TAG, "account_ids:" + Arrays.toString(account_ids));
             if (account_ids.length == 0) {
                 Log.i(TAG, "account_ids is empty");
                 return;

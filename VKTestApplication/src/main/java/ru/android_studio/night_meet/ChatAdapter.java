@@ -80,7 +80,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.UserHolder> {
                     Log.i(TAG, "Viewed in browser");
                     Log.i(TAG, "userId: " + userId);
                     Log.i(TAG, "myUserId: " + myUserId);
-                    Call<Result> resultCall = nightMeetAPI.changeStatus(myUserId, String.valueOf(userId), RelationType.VIEWED.ordinal() + 1);
+                    Call<Result> resultCall = nightMeetAPI.changeStatus(myUserId, String.valueOf(userId), RelationType.VIEWED.getId());
                     resultCall.enqueue(new ViewedCallBack());
                 }
             };

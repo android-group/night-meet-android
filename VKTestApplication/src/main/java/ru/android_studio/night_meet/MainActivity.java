@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,7 +27,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-import ru.android_studio.night_meet.login.VkLoginActivity;
 import ru.android_studio.night_meet.retrofit.api.NightMeetAPI;
 import ru.android_studio.night_meet.retrofit.api.VkAPI;
 import ru.android_studio.night_meet.retrofit.model.ConfigParam;
@@ -38,7 +39,6 @@ import ru.android_studio.night_meet.retrofit.model.Users;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private ImageView photo;
 
     private VkAPI vkAPI;
     private RequestType requestType = RequestType.SKIP;
@@ -46,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private String userId;
     private Queue<String> userQueue = new LinkedList<>();
     private String relationUserId;
+    private View next;
+    private View like;
+    private View back;
+    private ImageView photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,23 +59,22 @@ public class MainActivity extends AppCompatActivity {
         init();
 
         userId = getIntent().getStringExtra(ConfigParam.USER_ID);
-        if(userId == null) {
+        if (userId == null) {
             SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
             userId = sharedPref.getString(ConfigParam.USER_ID, "");
         }
-        Log.i(TAG, "My userId: " + userId);
+        Log.i(TAG, "My userId: " + userId);;
 
-        Call<Result> call = nightMeetAPI.getUsers(userId);
-        call.enqueue(new CallbackResult());
-
-        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+        next = findViewById(R.id.next);
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 nextMeet(RequestType.SKIP);
             }
         });
 
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 nextMeet(RequestType.LOVE);
@@ -79,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        findViewById(R.id.like).setOnClickListener(new View.OnClickListener() {
+        like = findViewById(R.id.like);
+        like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 like();
@@ -90,25 +94,57 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(topToolBar);
         topToolBar.setLogo(R.mipmap.ic_launcher);
         topToolBar.setLogoDescription(getResources().getString(R.string.app_name));
+
+        Call<Result> call = nightMeetAPI.getUsers(userId);
+        call.enqueue(new InitCallbackResult());
+
+        loadImageMsg();
+    }
+
+    private void loadImageMsg() {
+        Call<Result> resultCall = nightMeetAPI.getRelations(userId, RelationType.CONNECT.getId());
+        resultCall.enqueue(new ImageMsgCallBack());
+    }
+
+    private class ImageMsgCallBack implements retrofit2.Callback<Result> {
+        @Override
+        public void onResponse(Call<Result> call, Response<Result> response) {
+            Log.i(TAG, "onResponse");
+            String[] account_ids = response.body().account_ids;
+
+            ActionMenuItemView actionMsg = (ActionMenuItemView) findViewById(R.id.action_msg);
+            if(actionMsg != null) {
+                Log.i(TAG, "account_ids:" + Arrays.toString(account_ids));
+                if (account_ids.length == 0) {
+                    actionMsg.setIcon(getResources().getDrawable(R.drawable.chat));
+                } else {
+                    actionMsg.setIcon(getResources().getDrawable(R.drawable.chat_active));
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Result> call, Throwable t) {
+            Log.i(TAG, "NightMeetUserCallBack onFailure");
+            Log.e(TAG, "NightMeetUserCallBack onFailure", t);
+        }
     }
 
     private void like() {
-        int relationType = RelationType.LIKE.ordinal() + 1;
-        Log.i(TAG, "like userId=" + userId + "&relationUserId=" + relationUserId + "&relationType=" + relationType);
-
-        Call<Result> resultCall = nightMeetAPI.changeStatus(userId, relationUserId, relationType);
+        Log.i(TAG, "like userId=" + userId + "&relationUserId=" + relationUserId + "&relationType=" + RelationType.LIKE.getId());
+        Call<Result> resultCall = nightMeetAPI.changeStatus(userId, relationUserId, RelationType.LIKE.getId());
         resultCall.enqueue(new NightMeetLikeCallback());
 
         nextMeet(RequestType.LOVE);
     }
 
     private void emptyResult() {
-        ImageView photo = (ImageView) findViewById(R.id.photo);
         photo.setImageResource(R.drawable.noresults);
 
-        findViewById(R.id.next).setVisibility(View.GONE);
-        findViewById(R.id.like).setVisibility(View.GONE);
-        findViewById(R.id.back).setVisibility(View.GONE);
+
+        next.setVisibility(View.GONE);
+        like.setVisibility(View.GONE);
+        back.setVisibility(View.GONE);
     }
 
     private void init() {
@@ -151,8 +187,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -196,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class CallbackResult implements Callback<Result> {
+    private class InitCallbackResult implements Callback<Result> {
 
         @Override
         public void onResponse(Call<Result> call, Response<Result> response) {
@@ -234,7 +270,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Call<Result> call, Throwable t) {
-
+            Log.e(TAG, t.getLocalizedMessage());
+            t.printStackTrace();
         }
     }
 }
