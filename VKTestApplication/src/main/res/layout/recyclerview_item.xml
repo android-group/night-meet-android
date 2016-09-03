@@ -3,12 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/small_logo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:id="@+id/small_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
         android:src="@drawable/like_white" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,22 +19,27 @@
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingTop="5dp"
-            android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:background="?android:attr/selectableItemBackground"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView2"
+            <TextView
+                android:id="@+id/fio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingTop="5dp"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:text="Добавить в друзья"
+            />
     </LinearLayout>
 </LinearLayout>

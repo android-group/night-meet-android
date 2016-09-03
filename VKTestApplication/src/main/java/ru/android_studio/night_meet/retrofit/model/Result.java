@@ -6,5 +6,5 @@ import javax.annotation.Generated;
 public class Result {
 
     public String result;
-
+    public String[] account_ids;
 }

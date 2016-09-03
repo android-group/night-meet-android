@@ -9,20 +9,45 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+import ru.android_studio.night_meet.retrofit.api.NightMeetAPI;
+import ru.android_studio.night_meet.retrofit.api.VkAPI;
+import ru.android_studio.night_meet.retrofit.model.ConfigParam;
+import ru.android_studio.night_meet.retrofit.model.RelationType;
+import ru.android_studio.night_meet.retrofit.model.Result;
+import ru.android_studio.night_meet.retrofit.model.User;
+import ru.android_studio.night_meet.retrofit.model.Users;
 
 public class ChatActivity extends AppCompatActivity {
 
     private final static String TAG = "ChatActivity";
+    private ArrayList<User> users = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private ImageView photo;
+    private VkAPI vkAPI;
+    private String userId;
+    private NightMeetAPI nightMeetAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        userId = getIntent().getStringExtra(ConfigParam.USER_ID);
+        Log.i(TAG, "My userId: " + userId);
+
+        init();
 
         Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(topToolBar);
@@ -40,18 +65,26 @@ public class ChatActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new MyAdapter(getDataSet());
-        mRecyclerView.setAdapter(mAdapter);
-
+        mAdapter = new ChatAdapter(this, users, nightMeetAPI, userId);
         mRecyclerView.setAdapter(mAdapter);
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
         mRecyclerView.addItemDecoration(itemDecoration);
+    }
 
-        // Code to Add an item with default animation
-        //((MyRecyclerViewAdapter) mAdapter).addItem(obj, index);
+    private void init() {
+        Log.i(TAG, "init");
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .addConverterFactory(JacksonConverterFactory.create()) // конвертер JSON
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
 
-        // Code to remove an item with default animation
-        //((MyRecyclerViewAdapter) mAdapter).deleteItem(index);
+        vkAPI = builder.baseUrl("https://api.vk.com/method/").build().create(VkAPI.class);
+        nightMeetAPI = builder.baseUrl("http://android-studio.ru:8888/api/v1/").build().create(NightMeetAPI.class);
+
+        int relationType = RelationType.CONNECT.ordinal() + 1;
+        Call<Result> relations = nightMeetAPI.getRelations(userId, relationType);
+        relations.enqueue(new NightMeetUserCallBack());
+
+        photo = (ImageView) findViewById(R.id.small_photo);
     }
 
     @Override
@@ -78,21 +111,43 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ((MyAdapter) mAdapter).setOnItemClickListener(new MyAdapter.MyClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Log.i(TAG, " Clicked on Item " + position);
-            }
-        });
     }
 
-    private ArrayList<DataObject> getDataSet() {
-        ArrayList results = new ArrayList<DataObject>();
-        for (int index = 0; index < 20; index++) {
-            DataObject obj = new DataObject("Some Primary Text " + index,
-                    "Secondary " + index);
-            results.add(index, obj);
+    private class NightMeetUserCallBack implements retrofit2.Callback<Result> {
+        @Override
+        public void onResponse(Call<Result> call, Response<Result> response) {
+            Log.i(TAG, "NightMeetUserCallBack onResponse");
+            String[] account_ids = response.body().account_ids;
+
+            if (account_ids.length == 0) {
+                Log.i(TAG, "account_ids is empty");
+                return;
+            }
+
+            String usersIds = Arrays.toString(account_ids);
+            Log.i(TAG, "usersIds: " + usersIds);
+            Call<Users> vkCallBack = vkAPI.getUsers(usersIds.substring(1, usersIds.length() - 1), "photo_200");
+            vkCallBack.enqueue(new VkUserCallBack());
+
         }
-        return results;
+
+        @Override
+        public void onFailure(Call<Result> call, Throwable t) {
+            Log.i(TAG, "NightMeetUserCallBack onFailure");
+            Log.e(TAG, "NightMeetUserCallBack onFailure", t);
+        }
+    }
+
+    private class VkUserCallBack implements retrofit2.Callback<Users> {
+        @Override
+        public void onResponse(Call<Users> call, Response<Users> response) {
+            users.addAll(response.body().getUser());
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onFailure(Call<Users> call, Throwable t) {
+
+        }
     }
 }

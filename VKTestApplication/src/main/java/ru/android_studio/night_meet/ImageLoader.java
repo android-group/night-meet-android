@@ -16,11 +16,21 @@ import com.squareup.picasso.Picasso;
  * Если не нашли изображения в кэше, тогда скачиваем их с сервера
 * */
 public class ImageLoader {
+    public static void loadByUrlToImageView(final String url, final ImageView imageView, boolean isLiked) {
+        if(isLiked) {
+            loadByUrlToImageView(url, imageView, R.drawable.like_red);
+        } else {
+            loadByUrlToImageView(url, imageView, R.drawable.like_white);
+        }
+    }
+    public static void loadByUrlToImageView(final String url, final ImageView imageView) {
+        loadByUrlToImageView(url, imageView, false);
+    }
 
-    public static void loadByUrlToImageView(final Context context, final String url, final ImageView imageView) {
-        Picasso.with(context)
+    public static void loadByUrlToImageView(final String url, final ImageView imageView, final int resDrawable) {
+        Picasso.with(imageView.getContext())
                 .load(url)
-                .placeholder(R.drawable.like_white)
+                .placeholder(resDrawable)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .into(imageView, new Callback() {
 
@@ -32,9 +42,9 @@ public class ImageLoader {
                     @Override
                     public void onError() {
                         //Try again online if cache failed
-                        Picasso.with(context)
+                        Picasso.with(imageView.getContext())
                                 .load(url)
-                                .placeholder(R.drawable.like_white)
+                                .placeholder(resDrawable)
                                 .into(imageView, new Callback() {
                                     @Override
                                     public void onSuccess() {

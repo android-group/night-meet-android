@@ -4,6 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import ru.android_studio.night_meet.retrofit.model.Result;
 import ru.android_studio.night_meet.retrofit.model.Sympathy;
@@ -12,68 +13,16 @@ import ru.android_studio.night_meet.retrofit.model.Sympathy;
  * Взаимодействие с сервером night meet
  */
 public interface NightMeetAPI {
+    @POST("account/{id}")
+    Call<Result> login(@Path("id") String userId);
 
-    /**
-     * Добавление пользователя
-     * POST: account?user_id=<текущий пользователь>
-     *
-     * @param userId - идентификатор текущего пользователя.
-     * @return exempli gratia: { result:"ok" }
-     */
-    @POST("account")
-    Call<Result> postAccount(@Query("user_id") int userId);
+    @GET("account/{id}/candidates")
+    Call<Result> getUsers(@Path("id") String userId);
 
-    /**
-     * поиск пользователя
-     * GET: search?user_id=<текущий пользователь>&count=<количество>
-     *
-     * @param userId - идентификатор текущего пользователя.
-     * @param count - колличество пользователей.
-     *
-     * @return exempli gratia: { users:[id,id,id] }
-     */
-    @GET("search")
-    Call<Sympathy> search(@Query("user_id") int userId, @Query("id") int count);
-
-    /**
-     * нажатие кнопки
-     * POST: submit?user_id=<текущий пользователь>&relationship_type=<int>
-     * * relationship_type:
-     * 1 - love
-     * 2 - hate
-     *
-     * @param userId - идентификатор текущего пользователя.
-     * @param relationshipType - тип отношения
-     *
-     * @return exempli gratia: { result:"ok" }
-     */
-    @POST("submit")
-    Call<Result> submit(@Query("user_id") int userId, @Query("relationship_type") int relationshipType);
+    @PUT("account/{id}/relations/{other_id}/{type}")
+    Call<Result> changeStatus(@Path("id") String userId, @Path("other_id") String relationUserId, @Path("type") int relationType);
 
 
-    /**
-     * получить симпатии
-     * GET: sympathy?user_id=<текущий пользователь>&is_viewed=<boolean>
-     *
-     * @param userId - идентификатор текущего пользователя.
-     * @param isViewed - просмотрел пользователя или нет
-     *
-     * @return exempli gratia: { users:[id,id,id] }
-     */
-    @GET("sympathy")
-    Call<Sympathy> searchSympathy(@Query("user_id") int userId, @Query("is_viewed") boolean isViewed);
-
-
-    /**
-     * изменение статуса
-     * PUT: sympathy?user_id=<текущий пользователь>&is_viewed=<boolean>
-     *
-     * @param userId - идентификатор текущего пользователя.
-     * @param isViewed - просмотрел пользователя или нет
-     *
-     * @return exempli gratia: { result:"ok" }
-     */
-    @PUT("sympathy")
-    Call<Result> putSympathy(@Query("user_id") int userId, @Query("is_viewed") boolean isViewed);
-
+    @GET("account/{id}/relations/{type}")
+    Call<Result> getRelations(@Path("id") String userId, @Path("type") int relationType);
 }

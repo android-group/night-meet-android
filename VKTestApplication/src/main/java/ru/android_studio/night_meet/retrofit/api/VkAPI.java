@@ -36,5 +36,5 @@ public interface VkAPI {
      * }
      */
     @GET("users.get")
-    Call<Users> getUsers(@Query("user_ids") int user, @Query("fields") String fields);
+    Call<Users> getUsers(@Query("user_ids") String user, @Query("fields") String fields);
 }

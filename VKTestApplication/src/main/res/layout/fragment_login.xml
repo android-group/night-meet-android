@@ -29,12 +29,12 @@
             android:layout_gravity="center_vertical"
             android:background="@drawable/vklogo" />
 
-        <ImageView
+        <!--<ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:id="@+id/ok"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/oklogo" />
+            android:background="@drawable/oklogo" />-->
 
         <!--<com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"

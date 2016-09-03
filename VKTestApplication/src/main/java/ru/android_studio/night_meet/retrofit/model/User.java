@@ -28,10 +28,14 @@ public class User {
     private String firstName;
     @JsonProperty("last_name")
     private String lastName;
-    @JsonProperty("photo_max_orig")
-    private String photoMaxOrig;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    @JsonProperty("photo_max_orig")
+    private String photoMaxOrig;
+
+    @JsonProperty("photo_200")
+    private String photo200;
 
     /**
      * @return The uid
@@ -107,4 +111,11 @@ public class User {
         this.additionalProperties.put(name, value);
     }
 
+    public String getPhoto200() {
+        return photo200;
+    }
+
+    public void setPhoto200(String photo200) {
+        this.photo200 = photo200;
+    }
 }

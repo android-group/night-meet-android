@@ -1,13 +1,28 @@
 package ru.android_studio.night_meet.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 import ru.android_studio.night_meet.MainActivity;
 import ru.android_studio.night_meet.R;
+import ru.android_studio.night_meet.retrofit.api.NightMeetAPI;
+import ru.android_studio.night_meet.retrofit.model.ConfigParam;
+import ru.android_studio.night_meet.retrofit.model.Result;
+import ru.android_studio.night_meet.retrofit.model.ResultType;
 import ru.android_studio.sdk.VKAccessToken;
 import ru.android_studio.sdk.VKCallback;
 import ru.android_studio.sdk.VKScope;
@@ -20,10 +35,10 @@ import ru.ok.android.sdk.util.OkScope;
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class VkLoginActivity extends OkLoginActivity {
+public class VkLoginActivity extends AppCompatActivity {
+
 
     private static final String TAG = "VkLoginActivity";
-
     /**
      * Scope is set of required permissions for your application
      *
@@ -37,19 +52,32 @@ public class VkLoginActivity extends OkLoginActivity {
             VKScope.MESSAGES,
             VKScope.DOCS
     };
-
-    //static CallbackManager callbackManager;
-
-    //private static LoginButton loginButton;
+    private NightMeetAPI nightMeetAPI;
 
     private boolean isResumed = false;
+    private String userId;
+
+    private void showLogout() {
+        updateUserIdSharedPreferences();
+        startMainActivity();
+    }
+
+    private void init() {
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .addConverterFactory(JacksonConverterFactory.create()) // конвертер JSON
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+
+        nightMeetAPI = builder
+                .baseUrl("http://android-studio.ru:8888/api/v1/")
+                .build()
+                .create(NightMeetAPI.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //FacebookSdk.sdkInitialize(getApplicationContext());
-        //callbackManager = CallbackManager.Factory.create();
+        setContentView(R.layout.activity_start);
 
         VKSdk.wakeUpSession(this, new VKCallback<VKSdk.LoginState>() {
             @Override
@@ -62,10 +90,6 @@ public class VkLoginActivity extends OkLoginActivity {
                         case LoggedIn:
                             showLogout();
                             break;
-                        case Pending:
-                            break;
-                        case Unknown:
-                            break;
                     }
                 }
             }
@@ -75,10 +99,7 @@ public class VkLoginActivity extends OkLoginActivity {
 
             }
         });
-    }
-
-    private void showLogout() {
-        startMainActivity();
+        init();
     }
 
     private void showLogin() {
@@ -111,7 +132,13 @@ public class VkLoginActivity extends OkLoginActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 // User passed Authorization
-                startMainActivity();
+                userId = res.userId;
+                Log.i(TAG, "login userId: " + userId);
+                addUserIdSharedPreferences(userId);
+                Call<Result> resultCall = nightMeetAPI.login(userId);
+                resultCall.enqueue(new NightMeetCallbackLogin());
+
+
             }
 
             @Override
@@ -122,12 +149,29 @@ public class VkLoginActivity extends OkLoginActivity {
 
         if (!VKSdk.onActivityResult(requestCode, resultCode, data, callback)) {
             super.onActivityResult(requestCode, resultCode, data);
-            //callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     private void startMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(ConfigParam.USER_ID, userId);
+        Log.i(TAG, "VkLoginActivity putExtra userId: " + userId);
+        startActivity(intent);
+    }
+
+    private void addUserIdSharedPreferences(String userId) {
+        Log.i(TAG, "VkLoginActivity addUserIdSharedPreferences");
+        Log.i(TAG, "VkLoginActivity USER_ID: " + userId);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(ConfigParam.USER_ID, userId);
+        editor.apply();
+    }
+
+    private void updateUserIdSharedPreferences() {
+        Log.i(TAG, "VkLoginActivity updateUserIdSharedPreferences");
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        userId = sharedPref.getString(ConfigParam.USER_ID, "");
     }
 
     public static class LoginFragment extends android.support.v4.app.Fragment {
@@ -141,8 +185,7 @@ public class VkLoginActivity extends OkLoginActivity {
             View v = inflater.inflate(R.layout.fragment_login, container, false);
 
             initVk(v);
-            initOk(v);
-            //initFacebook(v);
+            //initOk(v);
 
             return v;
         }
@@ -156,46 +199,23 @@ public class VkLoginActivity extends OkLoginActivity {
             };
             v.findViewById(R.id.vk).setOnClickListener(vkOnClickListener);
         }
+    }
 
-        private void initOk(View v) {
-            View.OnClickListener okOnClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //вызываем запрос авторизации. После OAuth будет вызван callback, определенный для объекта
-                    //request authorization
-                    mOdnoklassniki.requestAuthorization(getContext(), false, OkScope.VALUABLE_ACCESS);
-                }
-            };
+    class NightMeetCallbackLogin implements Callback<Result> {
 
-            v.findViewById(R.id.ok).setOnClickListener(okOnClickListener);
+        @Override
+        public void onResponse(Call<Result> call, Response<Result> response) {
+            Result body = response.body();
+            Log.i(TAG, response.toString());
+            if (ResultType.SUCCESS_RESULT.equals(body.result)) {
+                Log.i(TAG, "Success login");
+                startMainActivity();
+            }
         }
 
-        /*private void initFacebook(View v) {
-            loginButton = (LoginButton) v.findViewById(R.id.login_button);
-            // "publish_actions"
-            loginButton.setReadPermissions(Arrays.asList("user_status", "public_profile", "email"));
-            // If using in a fragment
-            loginButton.setFragment(this);
-            // Other app specific specialization
+        @Override
+        public void onFailure(Call<Result> call, Throwable t) {
 
-            // Callback registration
-            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                    //handleFacebookAccessToken(loginResult.getAccessToken());
-                }
-
-                @Override
-                public void onCancel() {
-                    Log.d(TAG, "facebook:onCancel");
-                }
-
-                @Override
-                public void onError(FacebookException exception) {
-                    Log.d(TAG, "facebook:onError", exception);
-                }
-            });
-        }*/
+        }
     }
 }
