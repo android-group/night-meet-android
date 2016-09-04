@@ -11,7 +11,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="ru.android_studio.night_meet.MainActivity"
     tools:showIn="@layout/activity_main"
-    android:background="@color/material_grey_300">
+    android:background="@color/vk_black">
 
     <ImageView
         android:id="@+id/photo"

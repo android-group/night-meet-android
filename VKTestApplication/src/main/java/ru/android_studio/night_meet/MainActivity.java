@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private String relationUserId;
     private View next;
     private View like;
-    private View back;
     private ImageView photo;
 
     @Override
@@ -73,15 +72,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        back = findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                nextMeet(RequestType.LOVE);
-            }
-        });
-
-
         like = findViewById(R.id.like);
         like.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
         topToolBar.setLogo(R.mipmap.ic_launcher);
         topToolBar.setLogoDescription(getResources().getString(R.string.app_name));
 
+        loadUsers();
+    }
+
+    private void loadUsers() {
         Call<Result> call = nightMeetAPI.getUsers(userId);
         call.enqueue(new InitCallbackResult());
 
@@ -102,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadImageMsg() {
-        Call<Result> resultCall = nightMeetAPI.getRelations(userId, RelationType.CONNECT.getId());
+        Call<Result> resultCall = nightMeetAPI.getRelations(userId, RelationType.LIKE.getId());
         resultCall.enqueue(new ImageMsgCallBack());
     }
 
@@ -144,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
         next.setVisibility(View.GONE);
         like.setVisibility(View.GONE);
-        back.setVisibility(View.GONE);
     }
 
     private void init() {
@@ -181,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             Call<Users> call = vkAPI.getUsers(relationUserId, "photo_max_orig");
             call.enqueue(new CallbackUsers());
         } else {
-            emptyResult();
+            loadUsers();
         }
     }
 

@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,8 +32,7 @@ public class ChatActivity extends AppCompatActivity {
     private ArrayList<User> users = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private ImageView photo;
+    //private ImageView photo;
     private VkAPI vkAPI;
     private String userId;
     private NightMeetAPI nightMeetAPI;
@@ -43,7 +41,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
+        emptyView = findViewById(R.id.empty_view);
         userId = getIntent().getStringExtra(ConfigParam.USER_ID);
         Log.i(TAG, "My userId: " + userId);
 
@@ -59,8 +57,10 @@ public class ChatActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        init();
 
         // specify an adapter (see also next example)
         mAdapter = new ChatAdapter(this, users, nightMeetAPI, userId);
@@ -69,8 +69,16 @@ public class ChatActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
         mRecyclerView.addItemDecoration(itemDecoration);
 
-        init();
-        View emptyView = findViewById(R.id.empty_view);
+        Call<Result> relations = nightMeetAPI.getRelations(userId, RelationType.LIKE.getId());
+        relations.enqueue(new NightMeetUserCallBack());
+
+        //photo = (ImageView) findViewById(R.id.small_photo);
+
+    }
+    View emptyView;
+
+    private void isEmptyList() {
+
         if (users.isEmpty()) {
             mRecyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
@@ -90,10 +98,7 @@ public class ChatActivity extends AppCompatActivity {
         vkAPI = builder.baseUrl("https://api.vk.com/method/").build().create(VkAPI.class);
         nightMeetAPI = builder.baseUrl("http://android-studio.ru:8888/api/v1/").build().create(NightMeetAPI.class);
 
-        Call<Result> relations = nightMeetAPI.getRelations(userId, RelationType.CONNECT.getId());
-        relations.enqueue(new NightMeetUserCallBack());
 
-        photo = (ImageView) findViewById(R.id.small_photo);
     }
 
     @Override
@@ -137,7 +142,6 @@ public class ChatActivity extends AppCompatActivity {
             Log.i(TAG, "usersIds: " + usersIds);
             Call<Users> vkCallBack = vkAPI.getUsers(usersIds.substring(1, usersIds.length() - 1), "photo_200");
             vkCallBack.enqueue(new VkUserCallBack());
-
         }
 
         @Override
@@ -150,8 +154,10 @@ public class ChatActivity extends AppCompatActivity {
     private class VkUserCallBack implements retrofit2.Callback<Users> {
         @Override
         public void onResponse(Call<Users> call, Response<Users> response) {
+            users.clear();
             users.addAll(response.body().getUser());
             mAdapter.notifyDataSetChanged();
+            isEmptyList();
         }
 
         @Override
