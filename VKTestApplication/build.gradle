@@ -10,12 +10,14 @@ android {
         versionName '1.0'
     }
     signingConfigs {
-        release {
-            storeFile file("C:\\project\\night-meet-android\\android-studio.jks")
-            storePassword "6305864750*Cc"
-            keyAlias 'android-studio'
-            keyPassword "6305864750*Cc"
-        }
+        // TODO CHANGE THIS PART
+    //    release {
+    //        
+    //        storeFile file("android-studio.jks")
+    //        storePassword ""
+    //        keyAlias 'android-studio'
+    //        keyPassword ""
+    //    }
     }
 
     buildTypes {
